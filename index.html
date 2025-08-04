@@ -97,3 +97,75 @@
     <!-- Hidden Hello World in a comment: SGVsbG8gV29ybGQ= -->
 </body>
 </html></body>
+<script>
+// Add a silly confetti effect after everything is revealed
+setTimeout(function() {
+    var colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00', '#00f'];
+    for (var i = 0; i < 80; i++) {
+        var conf = document.createElement('div');
+        conf.style.position = 'fixed';
+        conf.style.left = Math.random() * 100 + 'vw';
+        conf.style.top = '-5vh';
+        conf.style.width = conf.style.height = (6 + Math.random() * 8) + 'px';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.borderRadius = '50%';
+        conf.style.opacity = 0.7 + Math.random() * 0.3;
+        conf.style.zIndex = 9999;
+        conf.style.pointerEvents = 'none';
+        conf.style.transition = 'transform 2.5s cubic-bezier(.17,.67,.83,.67)';
+        document.body.appendChild(conf);
+        (function(c) {
+            setTimeout(function() {
+                c.style.transform = 'translateY(' + (90 + Math.random() * 10) + 'vh) rotate(' + (Math.random()*720-360) + 'deg)';
+            }, 50 + Math.random()*500);
+            setTimeout(function() {
+                c.remove();
+            }, 3000 + Math.random()*1000);
+        })(conf);
+    }
+    // Add a silly sound effect (slide whistle)
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(400, ctx.currentTime);
+    o.frequency.linearRampToValueAtTime(1200, ctx.currentTime + 0.5);
+    o.frequency.linearRampToValueAtTime(200, ctx.currentTime + 1.2);
+    g.gain.setValueAtTime(0.2, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 1.2);
+}, 2500);
+
+// Add a silly dancing emoji at the bottom
+setTimeout(function() {
+    var dancer = document.createElement('div');
+    dancer.textContent = '🕺💃';
+    dancer.style.position = 'fixed';
+    dancer.style.bottom = '10px';
+    dancer.style.left = '50%';
+    dancer.style.transform = 'translateX(-50%)';
+    dancer.style.fontSize = '3em';
+    dancer.style.animation = 'dance 1s infinite alternate';
+    dancer.style.userSelect = 'none';
+    dancer.style.pointerEvents = 'none';
+    document.body.appendChild(dancer);
+}, 2000);
+
+var style = document.createElement('style');
+style.textContent = `
+@keyframes dance {
+    0% { transform: translateX(-50%) rotate(-10deg) scale(1);}
+    100% { transform: translateX(-50%) rotate(10deg) scale(1.1);}
+}
+`;
+document.head.appendChild(style);
+
+// Add a silly easter egg: if user presses 'h', 'w', show a popup
+window.addEventListener('keydown', function(e) {
+    if ((e.key === 'h' || e.key === 'H') && (window.lastKey === 'w' || window.lastKey === 'W')) {
+        alert('🎉 You found the hidden Hello World easter egg! 🎉');
+    }
+    window.lastKey = e.key;
+});
+</script>
