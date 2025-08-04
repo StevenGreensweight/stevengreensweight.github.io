@@ -1,1 +1,99 @@
-Good Idea
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <script>
+            // Title is set via a function that decodes base64
+            (function(){
+                var t = atob('SGVsbG8gV29ybGQ=');
+                document.write(t.split('').map(function(c){return String.fromCharCode(c.charCodeAt(0));}).join(''));
+            })();
+        </script>
+    </title>
+    <style>
+        /* CSS animation to reveal text */
+        #hw {
+            opacity: 0;
+            transition: opacity 2s;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 0 0 5px #000, 0 0 10px #00f;
+            background: linear-gradient(90deg, #ff0, #f0f, #0ff, #ff0);
+            background-size: 400% 400%;
+            animation: gradientMove 5s infinite alternate;
+            width: fit-content;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px #0008;
+        }
+        @keyframes gradientMove {
+            0% {background-position: 0% 50%;}
+            100% {background-position: 100% 50%;}
+        }
+    </style>
+</head>
+<body style="background:#222;">
+    <canvas id="c" width="600" height="200" style="display:none;"></canvas>
+    <div id="hw"></div>
+    <script>
+        // Obfuscated Hello World string
+        var arr = [72,101,108,108,111,32,87,111,114,108,100];
+        var str = arr.map(function(x){return String.fromCharCode(x);}).join('');
+        // Draw to canvas in a convoluted way
+        var ctx = document.getElementById('c').getContext('2d');
+        ctx.font = "bold 48px serif";
+        ctx.fillStyle = "#0ff";
+        for(var i=0;i<str.length;i++){
+            ctx.save();
+            ctx.translate(50+i*40,100+Math.sin(i)*10);
+            ctx.rotate(Math.sin(i)*0.1);
+            ctx.fillText(str[i],0,0);
+            ctx.restore();
+        }
+        // Convert canvas to image and insert into div after delay
+        setTimeout(function(){
+            var img = new Image();
+            img.src = document.getElementById('c').toDataURL();
+            img.alt = "Hello World";
+            img.style.display = "block";
+            img.style.margin = "0 auto";
+            document.getElementById('hw').appendChild(img);
+            // Also append reversed string, then reverse it back with CSS
+            var rev = str.split('').reverse().join('');
+            var span = document.createElement('span');
+            span.textContent = rev;
+            span.style.display = 'block';
+            span.style.direction = 'rtl';
+            span.style.unicodeBidi = 'bidi-override';
+            span.style.color = '#ff0';
+            span.style.fontSize = '1.2em';
+            document.getElementById('hw').appendChild(span);
+            // Reveal the div
+            document.getElementById('hw').style.opacity = 1;
+            // Play Hello World in Morse code using Web Audio API
+            var morse = {'H':'....','E':'.','L':'.-..','O':'---','W':'.--','R':'.-.','D':'-..',' ':' '};
+            var msg = str.toUpperCase().split('').map(function(c){return morse[c]||'';}).join(' ');
+            var ctxA = new (window.AudioContext||window.webkitAudioContext)();
+            var t = ctxA.currentTime+0.5;
+            msg.split('').forEach(function(ch){
+                if(ch=='.'||ch=='-'){
+                    var o=ctxA.createOscillator(),g=ctxA.createGain();
+                    o.type='sine';o.frequency.value=600;
+                    o.connect(g);g.connect(ctxA.destination);
+                    var dur=ch=='.'?0.1:0.3;
+                    g.gain.setValueAtTime(0.2,t);
+                    o.start(t);o.stop(t+dur);
+                    g.gain.linearRampToValueAtTime(0,t+dur);
+                    t+=dur+0.05;
+                } else {
+                    t+=0.15;
+                }
+            });
+        }, 1500);
+    </script>
+    <!-- Hidden Hello World in a comment: SGVsbG8gV29ybGQ= -->
+</body>
+</html></body>
